@@ -25,7 +25,8 @@ TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 '''
 
 LOOKAHEAD_WPS = 100  # Number of waypoints we will publish. You can change this number
-MAX_DECEL = 10.0
+MAX_DECEL = 1.0
+
 
 class WaypointUpdater(object):
     def __init__(self):
@@ -50,7 +51,6 @@ class WaypointUpdater(object):
     def loop(self):
         rate = rospy.Rate(30)
         while not rospy.is_shutdown():
-            rospy.loginfo(self.pose_stamped)
             if self.pose_stamped and self.waypoints_kdtree:  # wait for kdtree to be initialized
                 # Get closest waypoint index
                 closest_waypoint_index = self.get_closest_waypoint_index()
@@ -96,22 +96,23 @@ class WaypointUpdater(object):
     def decelerate_waypoints(self, base_waypoints, closest_waypoint_index):
         waypoints = []
 
-        # rospy.logwarn('closest_waypoint %d, stop_line_waypoint %d',
-        #               closest_waypoint_index, self.stop_line_waypoint_index)
-
         # -2 to make the nose of the car stop at the stop line
         stop_waypoint_index = max(self.stop_line_waypoint_index - closest_waypoint_index - 2, 0)
+
+        rospy.logwarn('Prepare to stop at the traffic light..')
 
         for i, waypoint in enumerate(base_waypoints[:stop_waypoint_index]):
             wp = Waypoint()
             wp.pose = waypoint.pose
 
             d = self.distance(base_waypoints, i, stop_waypoint_index)
-            velocity = math.sqrt(2 * MAX_DECEL * d)  # TODO: optimize this
+            velocity = math.sqrt(2 * MAX_DECEL * d)
+
             if velocity < 1.0:
                 velocity = 0.0
 
-            wp.twist.twist.linear.x = min(velocity, wp.twist.twist.linear.x)
+            wp.twist.twist.linear.x = min(velocity, waypoint.twist.twist.linear.x)
+
             waypoints.append(wp)
 
         return waypoints
