@@ -1,4 +1,13 @@
 <?xml version="1.0"?>
 <launch>
     <node pkg="tl_detector" type="tl_detector.py" name="tl_detector" output="screen" cwd="node"/>
+
+    <!--<node name="image_view_raw" pkg="image_view" type="image_view" respawn="false" output="screen">-->
+        <!--<remap from="image" to="/image_color" />-->
+    <!--</node>-->
+
+    <node name="image_view_result" pkg="image_view" type="image_view" respawn="false" output="screen">
+        <remap from="image" to="/image_result" />
+    </node>
+
 </launch>
