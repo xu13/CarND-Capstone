@@ -6,8 +6,8 @@
         <!--<remap from="image" to="/image_color" />-->
     <!--</node>-->
 
-    <node name="image_view_result" pkg="image_view" type="image_view" respawn="false" output="screen">
-        <remap from="image" to="/image_result" />
-    </node>
+    <!--<node name="image_view_result" pkg="image_view" type="image_view" respawn="false" output="screen">-->
+        <!--<remap from="image" to="/image_result" />-->
+    <!--</node>-->
 
 </launch>
